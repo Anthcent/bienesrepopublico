@@ -3,7 +3,7 @@
 use App\Core\View;
 
 $logo = $identity['logo_data_uri'] ?? '';
-$acronym = $identity['acronym'] ?: 'SBP';
+$acronym = $identity['acronym'] ?: 'DEM';
 $brandMode = $identity['brand_mode'] ?? 'initials';
 $showLogo = $brandMode === 'logo' && $logo;
 ?>
@@ -42,7 +42,7 @@ $showLogo = $brandMode === 'logo' && $logo;
       <div class="form-grid two">
         <label class="field">
           <span>Siglas</span>
-          <input name="acronym" maxlength="30" value="<?= View::e($identity['acronym']) ?>" placeholder="SBP">
+          <input name="acronym" maxlength="30" value="<?= View::e($identity['acronym']) ?>" placeholder="DEM">
           <small class="field-error" data-error-for="acronym"></small>
         </label>
         <label class="field">
@@ -250,6 +250,9 @@ $showLogo = $brandMode === 'logo' && $logo;
       const payload = Object.fromEntries(new FormData(form).entries());
       const response = await api('/api/settings/institutional-identity', { method: 'PUT', body: JSON.stringify(payload) });
       const identity = response.identity;
+      try {
+        document.cookie = "bp_identity=" + encodeURIComponent(JSON.stringify(identity)) + "; path=/; max-age=31536000; SameSite=Lax; Secure";
+      } catch (e) {}
       logoData.value = identity.logo_data_uri || '';
       document.querySelector('[data-brand-system]')?.replaceChildren(document.createTextNode(identity.system_name));
       document.querySelector('[data-brand-organization]')?.replaceChildren(document.createTextNode(identity.organization_name));
@@ -264,7 +267,7 @@ $showLogo = $brandMode === 'logo' && $logo;
         } else {
           brandMark.className = 'brand-mark has-initials';
           const initials = document.createElement('strong');
-          initials.textContent = identity.acronym || 'SBP';
+          initials.textContent = identity.acronym || 'DEM';
           brandMark.replaceChildren(initials);
         }
       }

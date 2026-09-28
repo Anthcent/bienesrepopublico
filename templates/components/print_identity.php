@@ -13,7 +13,7 @@ $showLogo = ($identity['brand_mode'] ?? 'logo') === 'logo' && !empty($identity['
   <?php if ($showLogo): ?>
     <img src="<?= View::e($identity['logo_data_uri']) ?>" alt="">
   <?php else: ?>
-    <strong class="print-identity-initials"><?= View::e($identity['acronym'] ?: 'SBP') ?></strong>
+    <strong class="print-identity-initials"><?= View::e($identity['acronym'] ?: 'DEM') ?></strong>
   <?php endif; ?>
   <span>
     <strong><?= View::e($identity['organization_name']) ?></strong>

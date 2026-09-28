@@ -27,7 +27,7 @@ $showLogo = ($identity['brand_mode'] ?? 'logo') === 'logo' && !empty($identity['
           <?php if ($showLogo): ?>
             <img src="<?= View::e($identity['logo_data_uri']) ?>" alt="Logotipo de <?= View::e($identity['organization_name']) ?>">
           <?php else: ?>
-            <strong><?= View::e($identity['acronym'] ?: 'SBP') ?></strong>
+            <strong><?= View::e($identity['acronym'] ?: 'DEM') ?></strong>
           <?php endif; ?>
         </div>
       </div>
@@ -47,7 +47,7 @@ $showLogo = ($identity['brand_mode'] ?? 'logo') === 'logo' && !empty($identity['
       <?php if ($showLogo): ?>
         <img src="<?= View::e($identity['logo_data_uri']) ?>" alt="Logotipo de <?= View::e($identity['organization_name']) ?>">
       <?php else: ?>
-        <strong><?= View::e($identity['acronym'] ?: 'SBP') ?></strong>
+        <strong><?= View::e($identity['acronym'] ?: 'DEM') ?></strong>
       <?php endif; ?>
       <span><?= View::e($identity['system_name']) ?></span>
     </div>

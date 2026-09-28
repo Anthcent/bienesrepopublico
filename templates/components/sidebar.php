@@ -18,7 +18,7 @@ $showLogo = ($identity['brand_mode'] ?? 'logo') === 'logo' && !empty($identity['
       <?php if ($showLogo): ?>
         <img src="<?= View::e($identity['logo_data_uri']) ?>" alt="">
       <?php else: ?>
-        <strong><?= View::e($identity['acronym'] ?: 'SBP') ?></strong>
+        <strong><?= View::e($identity['acronym'] ?: 'DEM') ?></strong>
       <?php endif; ?>
     </div>
     <div class="brand-copy">

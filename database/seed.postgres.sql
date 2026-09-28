@@ -51,9 +51,14 @@ SELECT r.id, p.id FROM roles r CROSS JOIN permissions p
 WHERE r.codigo = 'CONSULTA' AND p.codigo IN ('asset.view', 'loan.view', 'report.generate', 'document.view', 'verification.view')
 ON CONFLICT (role_id, permission_id) DO NOTHING;
 
-INSERT INTO institutional_identity (id, system_name, organization_name, acronym, brand_mode)
-VALUES (1, 'Sistema de Bienes Públicos', 'Bienes Públicos', 'SBP', 'initials')
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO institutional_identity (id, system_name, organization_name, acronym, brand_mode, address, phone, email, website)
+VALUES (1, 'Sistema de Bienes Públicos', 'Bienes Públicos', 'DEM', 'initials', 'Dirección completa del organismo', '+58 000 0000000', 'contacto@organismo.gob', 'https://www.organismo.gob')
+ON CONFLICT (id) DO UPDATE SET
+  acronym = EXCLUDED.acronym,
+  address = EXCLUDED.address,
+  phone = EXCLUDED.phone,
+  email = EXCLUDED.email,
+  website = EXCLUDED.website;
 
 INSERT INTO loan_settings (id, default_loan_days, due_alert_days, require_return_observation)
 VALUES (1, 7, 3, 1)
