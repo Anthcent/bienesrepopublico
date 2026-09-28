@@ -23,7 +23,7 @@ return [
     // automático. En local, si no hay DATABASE_URL, se arma la misma URL
     // a partir de las variables DB_* (ver src/Core/Database.php).
     'db' => [
-        'url' => getenv('DATABASE_URL') ?: null,
+        'url' => getenv('DATABASE_URL') ?: (getenv('POSTGRES_URL') ?: null),
         'host' => getenv('DB_HOST') ?: '127.0.0.1',
         'port' => getenv('DB_PORT') ?: '5432',
         'name' => getenv('DB_NAME') ?: 'bienes_publicos',
