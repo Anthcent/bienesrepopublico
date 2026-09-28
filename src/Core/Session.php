@@ -13,7 +13,10 @@ final class Session
             ini_set('session.use_only_cookies', '1');
             $ttl = 24 * 60 * 60;
             ini_set('session.gc_maxlifetime', (string) $ttl);
-            session_set_save_handler(new DatabaseSessionHandler($ttl), true);
+
+            $secret = getenv('APP_KEY') ?: 'bp_secret_auth_token_95e3cc63_bienes';
+            session_set_save_handler(new CookieSessionHandler($config['app']['session_name'], $secret, $ttl, $config['app']['cookie_secure']), true);
+
             session_start([
                 'cookie_httponly' => true,
                 'cookie_samesite' => 'Lax',

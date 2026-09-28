@@ -7,6 +7,8 @@ if (PHP_SAPI === 'cli-server') {
     }
 }
 
+ob_start();
+
 require __DIR__ . '/../src/Support/autoload.php';
 
 use App\Core\Request;
