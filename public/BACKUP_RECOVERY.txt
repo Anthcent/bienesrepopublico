@@ -1,0 +1,88 @@
+RESPALDO Y RECUPERACION
+=======================
+
+Las copias se ejecutan fuera de la aplicacion web. El panel de Seguridad y respaldo solo muestra metadatos no secretos registrados por infraestructura.
+
+RUTA RAPIDA
+-----------
+
+1. Configura PGHOST, PGPORT, PGDATABASE, PGUSER y un PGPASSFILE protegido con permisos 0600.
+2. Ejecuta pg_dump desde un job protegido y almacena la copia fuera del host.
+3. Calcula y valida el checksum SHA-256.
+4. Registra el resultado con database/record_backup.php.
+5. Restaura periodicamente una copia en una base desechable y marca la verificacion.
+
+COPIA EXITOSA
+-------------
+
+  set -eu
+
+  export PGHOST="postgres.internal"
+  export PGPORT="5432"
+  export PGDATABASE="bienes_publicos"
+  export PGUSER="backup_operator"
+  export PGPASSFILE="/run/secrets/pgpass"
+
+  started_at="$(date -u '+%Y-%m-%d %H:%M:%S')"
+  success_recorded=0
+  record_result_on_exit() {
+    exit_code=$?
+    if [ "$success_recorded" -eq 0 ]; then
+      php database/record_backup.php failure \
+        --message="El trabajo externo de respaldo fallo con codigo $exit_code" \
+        --started-at="$started_at" || true
+    fi
+    exit "$exit_code"
+  }
+  trap record_result_on_exit EXIT
+
+  backup="bienes-publicos-$(date -u +%Y%m%dT%H%M%SZ).dump"
+  pg_dump --format=custom --compress=9 --no-owner --no-acl --file="$backup"
+  checksum="$(sha256sum "$backup" | cut -d ' ' -f 1)"
+  size="$(wc -c < "$backup")"
+
+  printf '%s  %s\n' "$checksum" "$backup" | sha256sum --check
+  encrypt_and_upload_to_external_storage "$backup"
+  verify_external_object "$backup" "$checksum"
+
+  php database/record_backup.php success \
+    --size="$size" \
+    --checksum="$checksum" \
+    --storage="external-object-storage" \
+    --started-at="$started_at"
+  success_recorded=1
+  trap - EXIT
+
+Registra el éxito UNICAMENTE después de confirmar cifrado, almacenamiento externo y checksum remoto. Si cualquiera de esos pasos falla, registra failure y no success. No registres credenciales, rutas internas ni nombres sensibles en el panel.
+
+COPIA FALLIDA
+-------------
+
+  php database/record_backup.php failure \
+    --message="pg_dump finalizo con codigo distinto de cero" \
+    --started-at="2026-09-01 02:00:00"
+
+RECUPERACION VERIFICADA
+-----------------------
+
+Configura PGDATABASE con el nombre de una base desechable. Nunca uses produccion.
+
+  export PGDATABASE="bienes_publicos_restore_test"
+  pg_restore --exit-on-error --no-owner --no-acl --dbname="$PGDATABASE" \
+    bienes-publicos-YYYYMMDDTHHMMSSZ.dump
+
+  psql -v ON_ERROR_STOP=1 -c \
+    "SELECT COUNT(*) FROM users; SELECT COUNT(*) FROM assets; SELECT COUNT(*) FROM loans;"
+
+  php database/record_backup.php restore-verified --id=123
+
+Antes de una recuperacion real se requiere mantenimiento, una copia previa del estado actual y aprobacion operativa. Una copia no se considera recuperable hasta completar esta prueba.
+
+DESPLIEGUE
+----------
+
+- APP_ENV=production
+- COOKIE_SECURE=1
+- ENABLE_DEMO_DATA=0
+- TRUSTED_PROXIES es opcional. Si se configura, debe contener exclusivamente IP o rangos IPv4 CIDR del proxy autorizado, separados por comas; habilita auditoría y bloqueo por IP real detrás del proxy.
+- Cifrado, retencion, almacenamiento y restauracion pertenecen a infraestructura.

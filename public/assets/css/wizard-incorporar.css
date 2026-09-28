@@ -1,0 +1,84 @@
+/* Wizard "Incorporar bien" — página dedicada (reemplaza el modal viejo).
+   Reutiliza los tokens y clases compartidas del sistema (.field, .panel,
+   .wizard-progress, .review-card, .state-card, .btn...) y sólo define acá
+   lo que es exclusivo de esta pantalla: el layout de 2 columnas y los
+   selects con búsqueda interna ("smart-select"). */
+
+.aw-layout { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 14px; align-items: start; }
+.aw-card { min-width: 0; }
+.aw-summary { position: sticky; top: 16px; min-width: 0; }
+
+.aw-panel-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 15px; }
+.aw-eyebrow { font-size: 10px; letter-spacing: .08em; color: #75849a; font-weight: 800; }
+.aw-hint { font-size: 10.5px; color: var(--text-muted); background: #f6f8fb; border: 1px solid #e1e8f1; border-radius: 6px; padding: 6px 10px; white-space: nowrap; }
+
+.aw-type-toolbar { display: flex; gap: 8px; margin-bottom: 10px; }
+.aw-type-quick-add { flex-shrink: 0; white-space: nowrap; }
+.aw-searchbox { height: 42px; border: 1px solid #c7d3e5; border-radius: 7px; background: #fff; display: flex; align-items: center; gap: 8px; padding: 0 10px; color: var(--text-muted); flex: 1; min-width: 0; }
+.aw-searchbox input { border: 0; outline: 0; min-width: 0; width: 100%; font-size: 12px; background: transparent; }
+
+/* Header de la página: en pantallas angostas 3 botones lado a lado con
+   flex:1 (comportamiento genérico de .page-heading-actions) los deja
+   demasiado angostos para su texto — acá se apilan a ancho completo. */
+.aw-heading-actions { flex-wrap: wrap; }
+@media (max-width: 720px) {
+  div.aw-heading-actions { flex-direction: column; align-items: stretch; }
+  div.aw-heading-actions .btn { width: 100%; }
+}
+
+.type-card i { width: 28px; height: 28px; border-radius: 7px; background: var(--orange-50); color: var(--orange-700); display: grid; place-items: center; font-style: normal; font-size: 14px; margin-bottom: auto; }
+
+/* Número de bien: prefijo "BP-" fijo (no editable) + input solo-dígitos +
+   botón para sugerir un número disponible al azar. */
+.aw-number-group { display: flex; align-items: stretch; border: 1px solid #c8d4e5; border-radius: 6px; overflow: hidden; background: #fff; }
+.aw-number-group:focus-within { border-color: var(--navy-700); box-shadow: 0 0 0 3px rgba(36,87,166,.08); }
+.aw-number-prefix { display: flex; align-items: center; padding: 0 10px; background: #f3f6fb; color: var(--text-secondary); font-weight: 700; font-size: 12px; border-right: 1px solid #c8d4e5; }
+.aw-number-group input { border: 0; outline: 0; flex: 1; min-width: 0; padding: 0 10px; height: 42px; font-size: 12px; color: var(--text-primary); background: transparent; }
+.aw-number-random { border: 0; border-left: 1px solid #c8d4e5; background: #fff; width: 42px; height: 42px; font-size: 16px; color: var(--navy-700); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.aw-number-random:hover { background: #f6f8fb; }
+.aw-number-random:disabled { opacity: .5; cursor: not-allowed; }
+
+.aw-other-create { display: none; margin-top: 10px; border: 1px solid #efc99f; background: #fffaf5; border-radius: 8px; padding: 12px; }
+.aw-other-create.show { display: block; }
+.aw-other-create h3 { font-size: 11px; color: var(--navy-900); margin: 0 0 10px; }
+.aw-color-box { border: 1px solid #dce5f0; border-radius: 8px; padding: 12px; background: #fbfcfe; }
+.aw-color-input { display: flex; align-items: center; gap: 8px; }
+.aw-color-input input { flex: 1; height: 42px; border: 1px solid #c7d3e5; border-radius: 7px; background: #fff; padding: 0 10px; font-size: 12px; color: var(--text-primary); }
+.aw-swatch-dot.aw-color-preview { width: 22px; height: 22px; flex-shrink: 0; background: #fff; border: 1px solid rgba(0,0,0,.15); transition: background-color .15s; }
+.aw-swatches { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.aw-swatch { border: 1px solid var(--border); background: #fff; border-radius: 99px; padding: 6px 11px; display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: #5e7088; cursor: pointer; }
+.aw-swatch-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); }
+.aw-swatch.active { border-color: var(--orange-700); background: var(--orange-50); color: var(--orange-800); }
+.aw-swatch.matched:not(.active) { border-color: var(--navy-700); box-shadow: 0 0 0 2px rgba(18,62,134,.12); }
+.aw-swatch-remove { margin-left: 1px; color: #a7b2c2; font-size: 12px; line-height: 1; padding: 1px 2px; border-radius: 50%; }
+.aw-swatch-remove:hover { color: var(--danger); background: var(--danger-bg); }
+
+.aw-optional { margin-top: 12px; border: 1px solid #e1e8f1; border-radius: 8px; overflow: hidden; }
+.aw-optional > button { height: 42px; width: 100%; border: 0; background: #f8fafc; color: #3b5376; text-align: left; padding: 0 12px; font-size: 11px; font-weight: 800; cursor: pointer; }
+.aw-optional-body { display: none; padding: 12px; }
+.aw-optional.open .aw-optional-body { display: block; }
+
+.aw-summary-body { padding: 15px; }
+.aw-asset-summary { border: 1px solid #dce5f1; background: #f8fbff; border-radius: 9px; padding: 14px; }
+.aw-asset-title { display: flex; gap: 10px; align-items: center; }
+.aw-asset-title i { width: 42px; height: 42px; border-radius: 8px; background: var(--orange-50); color: var(--orange-700); display: grid; place-items: center; font-style: normal; font-size: 18px; flex-shrink: 0; }
+.aw-asset-title div { display: flex; flex-direction: column; min-width: 0; }
+.aw-asset-title strong { font-size: 12.5px; color: var(--navy-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aw-asset-title span { font-size: 10.5px; color: #7b899b; margin-top: 2px; }
+.aw-summary-list { display: flex; flex-direction: column; gap: 9px; margin-top: 13px; }
+.aw-summary-row { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed #dfe6ef; padding-bottom: 8px; }
+.aw-summary-row:last-child { border-bottom: 0; }
+.aw-summary-row span { font-size: 10.5px; color: #77879b; }
+.aw-summary-row strong { font-size: 11.5px; color: var(--navy-900); text-align: right; max-width: 58%; overflow-wrap: anywhere; }
+.aw-progress { margin-top: 14px; }
+.aw-progress-top { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-muted); }
+.aw-progress-top strong { color: var(--navy-900); }
+.aw-progress .progress-bar { margin-top: 7px; }
+.aw-summary-help { margin-top: 11px; padding: 10px; border: 1px solid #e1e8f1; background: #fff; border-radius: 7px; font-size: 10.5px; color: var(--text-muted); line-height: 1.55; }
+
+/* Con el sidebar (258px) + la columna de resumen (320px) descontados, el
+   segundo breakpoint anterior (1080px→290px) dejaba la tarjeta del wizard en
+   ~350px de ancho: todo se veía apretado contra los bordes. Se pasa a una
+   sola columna bastante antes en vez de forzar dos columnas angostas. */
+@media (max-width: 1180px) { .aw-layout { grid-template-columns: 1fr; } .aw-summary { position: static; order: -1; } }
+@media (max-width: 680px) { .aw-form-grid { grid-template-columns: 1fr; } }

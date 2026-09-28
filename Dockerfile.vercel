@@ -1,0 +1,16 @@
+FROM php:8.3-cli-alpine
+
+RUN apk add --no-cache postgresql-libs \
+    && apk add --no-cache --virtual .build-deps postgresql-dev \
+    && docker-php-ext-install pdo_pgsql \
+    && apk del .build-deps
+
+RUN addgroup -S app && adduser -S app -G app
+
+WORKDIR /var/www/html
+COPY --chown=app:app . .
+RUN chmod +x docker-entrypoint.sh
+
+USER app
+
+ENTRYPOINT ["/var/www/html/docker-entrypoint.sh"]

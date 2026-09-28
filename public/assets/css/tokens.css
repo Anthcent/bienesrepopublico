@@ -1,0 +1,40 @@
+/* Tokens de diseño — Sistema de Bienes Públicos
+   Fuente: 01_PLAN_MAESTRO/PLAN_MAESTRO_V4.md §6 */
+:root {
+  --navy-900: #071f55;
+  --navy-700: #123e86;
+  --navy-50: #eef4fc;
+
+  --orange-700: #c44f00;
+  --orange-800: #a94000;
+  --orange-50: #fff4e8;
+
+  --page: #f2f6fc;
+  --surface: #ffffff;
+  --border: #d6e0ed;
+
+  --text-primary: #10213f;
+  --text-secondary: #50617a;
+  --text-muted: #78879d;
+
+  --success: #147d4a;
+  --success-bg: #e6f6ed;
+  --warning: #a15c00;
+  --warning-bg: #fff3d6;
+  --danger: #b42318;
+  --danger-bg: #fdecec;
+  --violet: #6558d3;
+  --violet-bg: #eae6ff;
+  --teal: #0f766e;
+  --teal-bg: #ddf3ec;
+  --blue-bg: #eaf1fc;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --shadow-card: 0 4px 14px rgba(7, 31, 85, .05);
+  --shadow-pop: 0 16px 40px rgba(7, 31, 85, .16);
+
+  --sidebar-w-expanded: 258px;
+  --sidebar-w-collapsed: 74px;
+}

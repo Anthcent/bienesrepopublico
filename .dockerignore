@@ -1,0 +1,8 @@
+.git
+.gitignore
+*.md
+CHECKPOINT_*.md
+REPORTE_SESION.md
+database/schema.sql
+database/seed.sql
+database/migrations
