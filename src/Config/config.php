@@ -5,7 +5,8 @@
  */
 $environment = getenv('APP_ENV') ?: 'production';
 $cookieSecure = filter_var(getenv('COOKIE_SECURE') ?: ($environment === 'production' ? '1' : '0'), FILTER_VALIDATE_BOOLEAN);
-$demoEnabled = filter_var(getenv('ENABLE_DEMO_DATA') ?: '0', FILTER_VALIDATE_BOOLEAN);
+$demoEnv = getenv('ENABLE_DEMO_DATA');
+$demoEnabled = ($demoEnv === false || $demoEnv === '') ? true : filter_var($demoEnv, FILTER_VALIDATE_BOOLEAN);
 
 return [
     'app' => [
@@ -15,7 +16,7 @@ return [
         'session_name' => 'bp_session',
         'environment' => $environment,
         'cookie_secure' => $cookieSecure,
-        'demo_enabled' => $demoEnabled && $environment !== 'production',
+        'demo_enabled' => $demoEnabled,
         'trusted_proxies' => array_values(array_filter(array_map('trim', explode(',', getenv('TRUSTED_PROXIES') ?: '')))),
     ],
     // Conexión a PostgreSQL. En despliegue (Hexper Ops/Dokploy) se usa

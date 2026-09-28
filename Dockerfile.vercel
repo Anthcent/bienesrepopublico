@@ -1,16 +1,35 @@
 FROM php:8.3-cli-alpine
 
-RUN apk add --no-cache postgresql-libs \
+# Instala paquetes de postgresql (servidor y cliente) y dependencias para pdo_pgsql
+RUN apk add --no-cache \
+        postgresql \
+        postgresql-contrib \
+        postgresql-client \
+        postgresql-libs \
     && apk add --no-cache --virtual .build-deps postgresql-dev \
     && docker-php-ext-install pdo_pgsql \
     && apk del .build-deps
 
 RUN addgroup -S app && adduser -S app -G app
 
+# Prepara directorios de postgres y permisos
+RUN mkdir -p /var/lib/postgresql/template /run/postgresql /tmp \
+    && chown -R app:app /var/lib/postgresql /run/postgresql /tmp \
+    && chmod 777 /run/postgresql /tmp
+
 WORKDIR /var/www/html
 COPY --chown=app:app . .
 RUN chmod +x docker-entrypoint.sh
 
 USER app
+
+# Inicializa y precarga la base de datos PostgreSQL durante el build
+RUN initdb -D /var/lib/postgresql/template -U postgres -E UTF8 --auth-local=trust --auth-host=trust \
+    && pg_ctl -D /var/lib/postgresql/template -l /tmp/pg_init.log -o "-k /tmp -c listen_addresses='127.0.0.1' -c port=5432" start \
+    && createdb -h 127.0.0.1 -p 5432 -U postgres bienes_publicos \
+    && php database/migrate.php \
+    && php database/bootstrap_demo_users.php \
+    && php database/seed_sample_data.php \
+    && pg_ctl -D /var/lib/postgresql/template -m fast stop
 
 ENTRYPOINT ["/var/www/html/docker-entrypoint.sh"]

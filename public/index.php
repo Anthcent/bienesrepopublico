@@ -1,5 +1,12 @@
 <?php
 
+if (PHP_SAPI === 'cli-server') {
+    $urlPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+    if ($urlPath !== '/' && is_file(__DIR__ . $urlPath)) {
+        return false;
+    }
+}
+
 require __DIR__ . '/../src/Support/autoload.php';
 
 use App\Core\Request;
